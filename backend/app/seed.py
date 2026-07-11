@@ -18,7 +18,7 @@ from google.cloud import firestore as fs
 from google.oauth2 import service_account
 from passlib.context import CryptContext
 
-CRED_PATH = os.path.join(os.path.dirname(__file__), "..", "firebase-credentials.json")
+CRED_PATH = os.path.join(os.path.dirname(__file__), "..", "firebase_credentials.json")
 
 FIRST_NAMES = ["Aarav","Aditya","Akash","Amara","Ananya","Ankit","Arjun","Arya",
     "Ayesha","Bhavya","Carlos","Chen","David","Deepa","Divya","Elena",
