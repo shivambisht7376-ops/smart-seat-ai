@@ -35,6 +35,11 @@ async def login(
         )
     except AuthError as e:
         raise HTTPException(status_code=e.status_code, detail=e.message)
+    except Exception as e:
+        import traceback
+        print(f"[LOGIN ERROR] {type(e).__name__}: {e}")
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Server error: {type(e).__name__}: {str(e)}")
 
 
 @router.post("/refresh", response_model=TokenResponse)
