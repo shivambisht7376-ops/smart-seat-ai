@@ -86,7 +86,7 @@ async def seed(n_employees=500, n_seats=2000, n_projects=50):
     )
     db = fs.AsyncClient(project=cred_dict["project_id"], credentials=google_creds)
 
-    # ── 1. Users ───────────────────────────────────────────────────────────────
+    # -- 1. Users ---------------------------------------------------------------
     print("  Creating users ...")
     users = [
         {"email": "admin@smartseat.ai",    "password": "Admin@123",  "role": "super_admin"},
@@ -109,9 +109,9 @@ async def seed(n_employees=500, n_seats=2000, n_projects=50):
         })
         user_ids[u["role"]] = uid
     admin_id = user_ids["super_admin"]
-    print(f"    ✓ {len(users)} users created")
+    print(f"    OK {len(users)} users created")
 
-    # ── 2. Departments + Designations ─────────────────────────────────────────
+    # -- 2. Departments + Designations -----------------------------------------
     print("  Creating departments + designations ...")
     dept_ids = {}
     desig_ids = {}
@@ -129,10 +129,10 @@ async def seed(n_employees=500, n_seats=2000, n_projects=50):
                 "id": xid, "title": title, "level": level, "department_id": did,
             })
             desig_ids[dept_name].append(xid)
-    print(f"    ✓ {len(DEPARTMENTS)} departments, designations created")
+    print(f"    OK {len(DEPARTMENTS)} departments, designations created")
 
-    # ── 3. Buildings → Floors → Zones ─────────────────────────────────────────
-    print("  Creating buildings → floors → zones ...")
+    # -- 3. Buildings -> Floors -> Zones -----------------------------------------
+    print("  Creating buildings -> floors -> zones ...")
     building_data = [
         ("Alpha Tower","Plot 12, Tech Park","Bengaluru"),
         ("Beta Campus","IT Hub, Whitefield","Bengaluru"),
@@ -161,9 +161,9 @@ async def seed(n_employees=500, n_seats=2000, n_projects=50):
                     "id": zid, "floor_id": fid, "name": zname, "capacity": 25,
                 })
                 zone_ids.append(zid)
-    print(f"    ✓ {len(building_data)} buildings, {len(zone_ids)} zones")
+    print(f"    OK {len(building_data)} buildings, {len(zone_ids)} zones")
 
-    # ── 4. Seats ───────────────────────────────────────────────────────────────
+    # -- 4. Seats ---------------------------------------------------------------
     print(f"  Creating {n_seats} seats ...")
     seat_types = ["standard","standard","standard","standing","hot_desk","cabin"]
     all_seat_ids = []
@@ -185,12 +185,12 @@ async def seed(n_employees=500, n_seats=2000, n_projects=50):
             await batch.commit()
             batch = db.batch()
             count = 0
-            print(f"      … seats {i+1}/{n_seats}")
+            print(f"      ... seats {i+1}/{n_seats}")
     if count:
         await batch.commit()
-    print(f"    ✓ {n_seats} seats created")
+    print(f"    OK {n_seats} seats created")
 
-    # ── 5. Employees ───────────────────────────────────────────────────────────
+    # -- 5. Employees -----------------------------------------------------------
     print(f"  Creating {n_employees} employees ...")
     emp_ids = []
     statuses = ["active"] * 8 + ["inactive", "on_leave"]
@@ -227,9 +227,9 @@ async def seed(n_employees=500, n_seats=2000, n_projects=50):
             print(f"      … employees {i+1}/{n_employees}")
     if count:
         await batch.commit()
-    print(f"    ✓ {n_employees} employees created")
+    print(f"    OK {n_employees} employees created")
 
-    # ── 6. Seat Allocations ────────────────────────────────────────────────────
+    # -- 6. Seat Allocations ----------------------------------------------------
     print("  Allocating seats ...")
     active_emps = [eid for eid, s, _ in emp_ids if s == "active"]
     shuffle_seats = list(all_seat_ids)
@@ -256,9 +256,9 @@ async def seed(n_employees=500, n_seats=2000, n_projects=50):
             count = 0
     if count:
         await batch.commit()
-    print(f"    ✓ {n_alloc} seat allocations")
+    print(f"    OK {n_alloc} seat allocations")
 
-    # ── 7. Projects ────────────────────────────────────────────────────────────
+    # -- 7. Projects ------------------------------------------------------------
     print(f"  Creating {n_projects} projects ...")
     templates = PROJECT_TEMPLATES * ((n_projects // len(PROJECT_TEMPLATES)) + 1)
     proj_statuses = ["active"] * 6 + ["planning"] * 2 + ["on_hold", "completed"]
@@ -312,9 +312,9 @@ async def seed(n_employees=500, n_seats=2000, n_projects=50):
                 count = 0
     if count:
         await batch.commit()
-    print(f"    ✓ {n_projects} projects with member assignments")
+    print(f"    OK {n_projects} projects with member assignments")
 
-    # ── 8. New Joiners ─────────────────────────────────────────────────────────
+    # -- 8. New Joiners ---------------------------------------------------------
     print("  Creating new joiner queue ...")
     new_joiner_emps = [eid for eid, _, is_new in emp_ids if is_new][:30]
     for eid in new_joiner_emps:
@@ -325,7 +325,7 @@ async def seed(n_employees=500, n_seats=2000, n_projects=50):
             "notes": "Auto-created by seed script",
             "created_at": datetime.utcnow().isoformat(),
         })
-    print(f"    ✓ {len(new_joiner_emps)} new joiners")
+    print(f"    OK {len(new_joiner_emps)} new joiners")
 
     print("\nFirestore seeding complete!\n")
     print("  Login credentials:")
@@ -334,7 +334,7 @@ async def seed(n_employees=500, n_seats=2000, n_projects=50):
     print("    pm@smartseat.ai       / Pm@123456")
     print("    employee@smartseat.ai / Emp@123456")
 
-    await db.close()
+    db.close()
 
 
 if __name__ == "__main__":
