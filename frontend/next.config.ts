@@ -18,6 +18,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "**.onrender.com",
+      },
+      {
+        protocol: "https",
         hostname: "ui-avatars.com",
       },
     ],
@@ -25,7 +29,7 @@ const nextConfig: NextConfig = {
 
   // Rewrites for API proxy (development)
   async rewrites() {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://smart-seat-ai-2.onrender.com";
     return [
       {
         source: "/api/:path*",

@@ -5,6 +5,14 @@
   "installCommand": "npm install",
   "devCommand": "npm run dev",
   "regions": ["iad1"],
+  "env": {
+    "NEXT_PUBLIC_API_URL": "https://smart-seat-ai-2.onrender.com"
+  },
+  "build": {
+    "env": {
+      "NEXT_PUBLIC_API_URL": "https://smart-seat-ai-2.onrender.com"
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",

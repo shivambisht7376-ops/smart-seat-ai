@@ -32,7 +32,7 @@ jobs:
       - name: Build
         working-directory: frontend
         env:
-          NEXT_PUBLIC_API_URL: http://localhost:8000
+          NEXT_PUBLIC_API_URL: https://smart-seat-ai-2.onrender.com
           NEXT_PUBLIC_APP_NAME: "SmartSeat AI"
         run: npm run build
 
