@@ -22,6 +22,7 @@ def init_firebase() -> FirestoreAsyncClient:
     # 1. Check Environment Variable (Koyeb / Vercel style)
     if env_cred:
         cred_dict = json.loads(env_cred)
+        project_id = cred_dict.get("project_id", "smartseat-ai-9b63e")
         cred = credentials.Certificate(cred_dict)
         svc_creds = service_account.Credentials.from_service_account_info(
             cred_dict,
@@ -38,6 +39,10 @@ def init_firebase() -> FirestoreAsyncClient:
             cred_path = render_secret_path
         else:
             cred_path = local_path
+        
+        with open(cred_path) as f:
+            cred_dict = json.load(f)
+        project_id = cred_dict.get("project_id", "smartseat-ai-9b63e")
             
         cred = credentials.Certificate(cred_path)
         svc_creds = service_account.Credentials.from_service_account_file(
@@ -49,7 +54,7 @@ def init_firebase() -> FirestoreAsyncClient:
     if not firebase_admin._apps:
         firebase_admin.initialize_app(cred)
 
-    _db = FirestoreAsyncClient(project="smartseat-ai-9b63e", credentials=svc_creds)
+    _db = FirestoreAsyncClient(project=project_id, credentials=svc_creds)
     return _db
 
 
