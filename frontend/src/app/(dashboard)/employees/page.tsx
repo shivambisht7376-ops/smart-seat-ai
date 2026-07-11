@@ -6,6 +6,7 @@ import { type ColumnDef } from "@tanstack/react-table";
 import {
   Download,
   Filter,
+  FolderOpen,
   Plus,
   RefreshCw,
   Upload,
@@ -20,6 +21,7 @@ import { Pagination } from "@/components/shared/pagination";
 import { SearchBar } from "@/components/shared/search-bar";
 import { EmploymentStatusBadge, BooleanBadge } from "@/components/shared/status-badge";
 import { EmployeeFormModal } from "@/components/employees/employee-form-modal";
+import { DepartmentManagerModal } from "@/components/employees/department-manager-modal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -185,6 +187,7 @@ export default function EmployeesPage() {
   const [showModal, setShowModal] = useState(false);
   const [editEmployee, setEditEmployee] = useState<Employee | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [showDeptModal, setShowDeptModal] = useState(false);
 
   const { data, isLoading, refetch } = useEmployees({
     ...filters,
@@ -250,6 +253,18 @@ export default function EmployeesPage() {
         </div>
         {isHRAdmin && (
           <div className="flex items-center gap-2">
+            {/* Manage Departments */}
+            <Button
+              id="manage-departments-btn"
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              onClick={() => setShowDeptModal(true)}
+            >
+              <FolderOpen className="w-4 h-4" />
+              Departments
+            </Button>
+
             {/* Bulk Import */}
             <label
               id="bulk-import-btn"
@@ -430,6 +445,12 @@ export default function EmployeesPage() {
           setEditEmployee(null);
         }}
         employee={editEmployee}
+      />
+
+      {/* Department Manager Modal */}
+      <DepartmentManagerModal
+        open={showDeptModal}
+        onClose={() => setShowDeptModal(false)}
       />
     </div>
   );

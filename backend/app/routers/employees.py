@@ -97,7 +97,28 @@ async def create_department(payload: dict, svc: Annotated[EmployeeService, Depen
     return await svc.create_department(payload.get("name", ""), payload.get("code", ""))
 
 
+@dept_router.patch("/{dept_id}", dependencies=[RequireHRAdmin])
+async def update_department(
+    dept_id: str,
+    payload: dict,
+    svc: Annotated[EmployeeService, Depends(_svc)] = None,
+):
+    dept = await svc.update_department(dept_id, payload)
+    if not dept:
+        raise HTTPException(status_code=404, detail="Department not found")
+    return dept
+
+
+@dept_router.delete("/{dept_id}", dependencies=[RequireHRAdmin], status_code=204)
+async def delete_department(dept_id: str, svc: Annotated[EmployeeService, Depends(_svc)] = None):
+    dept = await svc.get_department(dept_id)
+    if not dept:
+        raise HTTPException(status_code=404, detail="Department not found")
+    await svc.db.collection("departments").document(dept_id).delete()
+
+
 # ── Designations ───────────────────────────────────────────────────────────────
+
 @desig_router.get("", dependencies=[RequireAnyStaff])
 async def list_designations(
     department_id: Optional[str] = None,

@@ -122,6 +122,49 @@ export function useDepartments() {
   });
 }
 
+export function useCreateDepartment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { name: string; code: string }) => departmentApi.create(data),
+    onSuccess: (dept) => {
+      qc.invalidateQueries({ queryKey: departmentKeys.all });
+      toast.success(`Department "${dept.name}" created`);
+    },
+    onError: (err: { detail?: string }) => {
+      toast.error(err?.detail ?? "Failed to create department");
+    },
+  });
+}
+
+export function useUpdateDepartment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<{ name: string; code: string }> }) =>
+      departmentApi.update(id, data),
+    onSuccess: (dept) => {
+      qc.invalidateQueries({ queryKey: departmentKeys.all });
+      toast.success(`Department "${dept.name}" updated`);
+    },
+    onError: (err: { detail?: string }) => {
+      toast.error(err?.detail ?? "Failed to update department");
+    },
+  });
+}
+
+export function useDeleteDepartment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => departmentApi.delete(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: departmentKeys.all });
+      toast.success("Department deleted");
+    },
+    onError: (err: { detail?: string }) => {
+      toast.error(err?.detail ?? "Failed to delete department");
+    },
+  });
+}
+
 // ── Designations ───────────────────────────────────────────────────
 export function useDesignations(departmentId?: string) {
   return useQuery({

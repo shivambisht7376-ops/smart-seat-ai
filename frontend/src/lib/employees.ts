@@ -68,7 +68,8 @@ export const departmentApi = {
   create: (data: { name: string; code: string }) =>
     apiClient.post<Department>("/departments", data),
   update: (id: string, data: Partial<{ name: string; code: string }>) =>
-    apiClient.put<Department>(`/departments/${id}`, data),
+    apiClient.patch<Department>(`/departments/${id}`, data),
+  delete: (id: string) => apiClient.delete<void>(`/departments/${id}`),
 };
 
 // ── Designations ───────────────────────────────────────────────────
