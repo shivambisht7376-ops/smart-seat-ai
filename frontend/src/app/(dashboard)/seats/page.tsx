@@ -365,8 +365,8 @@ export default function SeatsPage() {
             </div>
           )}
           {seatData && seatData.total > 0 && (
-            <Pagination page={seatData.page} totalPages={seatData.pages}
-              hasNext={seatData.page < seatData.pages} hasPrev={seatData.page > 1}
+            <Pagination page={seatData.page} totalPages={seatData.total_pages}
+              hasNext={seatData.page < seatData.total_pages} hasPrev={seatData.page > 1}
               total={seatData.total} pageSize={seatData.page_size}
               onPageChange={(p) => setFilters((f) => ({ ...f, page: p }))}
               className="border-t border-[var(--color-border)] mt-4 pt-2" />
@@ -380,8 +380,8 @@ export default function SeatsPage() {
           <DataTable columns={columns} data={(seatData?.items ?? []) as Seat[]}
             isLoading={isLoading} emptyText="No seats found. Try adjusting your filters." />
           {seatData && seatData.total > 0 && (
-            <Pagination page={seatData.page} totalPages={seatData.pages}
-              hasNext={seatData.page < seatData.pages} hasPrev={seatData.page > 1}
+            <Pagination page={seatData.page} totalPages={seatData.total_pages}
+              hasNext={seatData.page < seatData.total_pages} hasPrev={seatData.page > 1}
               total={seatData.total} pageSize={seatData.page_size}
               onPageChange={(p) => setFilters((f) => ({ ...f, page: p }))}
               className="border-t border-[var(--color-border)]" />

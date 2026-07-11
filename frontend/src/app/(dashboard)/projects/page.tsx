@@ -270,8 +270,8 @@ export default function ProjectsPage() {
         {data && data.total > 0 && (
             <Pagination
               page={data.page}
-              totalPages={data.pages}
-              hasNext={data.page < data.pages}
+              totalPages={data.total_pages}
+              hasNext={data.page < data.total_pages}
               hasPrev={data.page > 1}
               total={data.total}
             pageSize={data.page_size}
