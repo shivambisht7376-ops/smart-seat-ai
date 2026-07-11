@@ -41,7 +41,7 @@ export interface CurrentUser extends User {
 // ─── Department & Designation ────────────────────────────────────────────────
 
 export interface Department {
-  id: number;
+  id: string;
   name: string;
   code: string;
   manager_id?: string;
