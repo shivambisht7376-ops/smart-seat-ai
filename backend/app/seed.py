@@ -6,17 +6,19 @@ Populates Firebase Firestore with:
   5 buildings, 20 floors, 80 zones, 2000 seats,
   500 employees, 50 projects, ~1300 allocations, 30 new-joiners
 """
-import asyncio, uuid, random, os, sys
+import asyncio, uuid, random, os, sys, json
 from datetime import date, timedelta, datetime
 from dotenv import load_dotenv
 
 load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
 
 import firebase_admin
-from firebase_admin import credentials, firestore as fs
+from firebase_admin import credentials
+from google.cloud import firestore as fs
+from google.oauth2 import service_account
 from passlib.context import CryptContext
 
-CRED_PATH = os.path.join(os.path.dirname(__file__), "firebase-credentials.json")
+CRED_PATH = os.path.join(os.path.dirname(__file__), "..", "firebase-credentials.json")
 
 FIRST_NAMES = ["Aarav","Aditya","Akash","Amara","Ananya","Ankit","Arjun","Arya",
     "Ayesha","Bhavya","Carlos","Chen","David","Deepa","Divya","Elena",
@@ -72,12 +74,17 @@ BATCH_SIZE = 400  # Firestore batch limit is 500
 
 
 async def seed(n_employees=500, n_seats=2000, n_projects=50):
-    print("🌱 SmartSeat AI — Seeding Firestore ...")
+    print("SmartSeat AI - Seeding Firestore ...")
 
-    cred = credentials.Certificate(CRED_PATH)
-    if not firebase_admin._apps:
-        firebase_admin.initialize_app(cred, {"projectId": "smartseat-ai-5818c"})
-    db = fs.AsyncClient(project="smartseat-ai-5818c")
+    with open(CRED_PATH) as f:
+        cred_dict = json.load(f)
+
+    google_creds = service_account.Credentials.from_service_account_info(
+        cred_dict,
+        scopes=["https://www.googleapis.com/auth/datastore",
+                "https://www.googleapis.com/auth/cloud-platform"]
+    )
+    db = fs.AsyncClient(project=cred_dict["project_id"], credentials=google_creds)
 
     # ── 1. Users ───────────────────────────────────────────────────────────────
     print("  Creating users ...")
@@ -320,7 +327,7 @@ async def seed(n_employees=500, n_seats=2000, n_projects=50):
         })
     print(f"    ✓ {len(new_joiner_emps)} new joiners")
 
-    print("\n✅ Firestore seeding complete!\n")
+    print("\nFirestore seeding complete!\n")
     print("  Login credentials:")
     print("    admin@smartseat.ai    / Admin@123")
     print("    hr@smartseat.ai       / Hr@123456")
