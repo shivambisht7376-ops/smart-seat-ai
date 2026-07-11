@@ -18,8 +18,9 @@ def init_firebase() -> FirestoreAsyncClient:
         return _db
 
     env_cred = os.environ.get("FIREBASE_CRED_JSON")
+    
+    # 1. Check Environment Variable (Koyeb / Vercel style)
     if env_cred:
-        # Load credentials from environment variable for production (e.g. Render/Railway)
         cred_dict = json.loads(env_cred)
         cred = credentials.Certificate(cred_dict)
         svc_creds = service_account.Credentials.from_service_account_info(
@@ -28,8 +29,16 @@ def init_firebase() -> FirestoreAsyncClient:
                     "https://www.googleapis.com/auth/datastore"],
         )
     else:
-        # Load from file for local development
-        cred_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "firebase_credentials.json")
+        # 2. Check Render Secret Files path
+        render_secret_path = "/etc/secrets/firebase_credentials.json"
+        # 3. Check Local Development path
+        local_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "firebase_credentials.json")
+        
+        if os.path.exists(render_secret_path):
+            cred_path = render_secret_path
+        else:
+            cred_path = local_path
+            
         cred = credentials.Certificate(cred_path)
         svc_creds = service_account.Credentials.from_service_account_file(
             cred_path,
