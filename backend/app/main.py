@@ -24,14 +24,14 @@ from app.database import get_mongodb
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print(f"🚀 Starting {settings.APP_NAME} v{settings.APP_VERSION}")
+    print(f"Starting {settings.APP_NAME} v{settings.APP_VERSION}")
     print(f"   Environment : {settings.ENVIRONMENT}")
     print(f"   Database    : In-Memory (no external DB required)")
     print(f"   AI Provider : {settings.ai_provider}")
     get_mongodb()  # initialise the in-memory store
 
     yield
-    print("👋 SmartSeat AI shutdown complete")
+    print("SmartSeat AI shutdown complete")
 
 app = FastAPI(
     title=settings.APP_NAME,
